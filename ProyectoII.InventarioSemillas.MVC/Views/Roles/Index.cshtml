@@ -1,0 +1,53 @@
+@using ProyectoII.InventarioSemillas.MVC.Models.Roles
+@model IEnumerable<RolDto>
+
+@{
+    ViewData["Title"] = "Gestión de Roles";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear nuevo rol</a>
+    <a asp-action="AssignRole" class="btn btn-success">Asignar rol a usuario</a>
+</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre del rol</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var role in Model)
+    {
+        <tr>
+            <td>@role.Name</td>
+            <td>
+                <form asp-action="Delete" method="post" style="display: inline;">
+                    <input type="hidden" name="roleName" value="@role.Name" />
+                    <button type="submit" class="btn btn-danger btn-sm" 
+                            onclick="return confirm('¿Está seguro de eliminar este rol?')">
+                        Eliminar
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

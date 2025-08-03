@@ -1,25 +1,23 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoII.InventarioSemillas.MVC.Models;
+using ProyectoII.InventarioSemillas.MVC.Servicios;
+using System.Diagnostics;
 
 namespace ProyectoII.InventarioSemillas.MVC.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IApiCliente apiCliente) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        private readonly IApiCliente _apiCliente = apiCliente;
 
         public IActionResult Index()
         {
-            return View();
-        }
+            //var datos = await _apiCliente.ObtenerPronosticoAsync();
+            //if (datos == null)
+            //{
+            //    TempData["Error"] = "Token inválido o expirado. Inicie sesión.";
+            //    return RedirectToAction("Login", "Cuenta");
+            //}
 
-        public IActionResult Privacy()
-        {
             return View();
         }
 

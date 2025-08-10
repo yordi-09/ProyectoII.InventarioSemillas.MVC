@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 using ProyectoII.InventarioSemillas.MVC.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,9 +12,12 @@ builder.Services.AddHttpClient("ApiJwt", client =>
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IApiCliente, ApiCliente>();
 builder.Services.AddScoped<ConsumidorAPI>();
 builder.Services.AddScoped<RolesServicio>();
+builder.Services.AddScoped<SemillasServicio>();
+builder.Services.AddScoped<EspeciesServicio>();
+builder.Services.AddScoped<UbicacionesServicio>();
+
 builder.Services.AddSession();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

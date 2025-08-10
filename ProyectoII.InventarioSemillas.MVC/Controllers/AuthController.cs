@@ -1,14 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoII.InventarioSemillas.MVC.Models.Auth;
+using ProyectoII.InventarioSemillas.MVC.Models.Roles;
+using ProyectoII.InventarioSemillas.MVC.Servicios;
+using System.Reflection;
 using System.Security.Claims;
 
 namespace ProyectoII.InventarioSemillas.MVC.Controllers
 {
-    public class AuthController(IHttpClientFactory httpClientFactory) : Controller
+    public class AuthController(IHttpClientFactory httpClientFactory, RolesServicio rolesServicio) : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+        private readonly RolesServicio rolesServicio = rolesServicio;
 
         [HttpGet]
         public IActionResult Login()
@@ -81,9 +86,24 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
-            return View();
+            List<RolDto>? roles = await rolesServicio.ObtenerTodosLosRoles();
+            var model = new RegisterViewModel
+            {
+                Email = "",
+                Password = "",
+                Nombre = "",
+                Apellido = "",
+                Role = "",
+                Roles = roles?.Select(r => new SelectListItem
+                {
+                    Value = r.Name,
+                    Text = r.Name
+                }) ?? []
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -96,7 +116,10 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
             var response = await client.PostAsJsonAsync("api/auth/Registro", new
             {
                 model.Email,
-                model.Password
+                model.Password,
+                model.Nombre,
+                model.Apellido,
+                model.Role
             });
 
             if (!response.IsSuccessStatusCode)
@@ -113,7 +136,5 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
         {
             return View();
         }
-
-
     }
 }

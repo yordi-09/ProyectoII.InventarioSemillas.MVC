@@ -1,0 +1,124 @@
+@model IEnumerable<ProyectoII.InventarioSemillas.MVC.Models.Semillas.SemillaDto>
+@{
+    ViewData["Title"] = "Gestión de semillas";
+    var especies = (ViewBag.Especies as List<ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto>) ?? new List<ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto>();
+    var ubicaciones = (ViewBag.Ubicaciones as List<ProyectoII.InventarioSemillas.MVC.Models.Ubicaciones.UbicacionDto>) ?? new List<ProyectoII.InventarioSemillas.MVC.Models.Ubicaciones.UbicacionDto>();
+    int? especieId = ViewBag.EspecieId as int?;
+    var semillasPorEspecie = (ViewBag.SemillasPorEspecie as Dictionary<int, int>) ?? new Dictionary<int, int>();
+    var especieSeleccionada = ViewBag.EspecieSeleccionada as ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Filtrar por especie</h5>
+                <form method="get" asp-action="Index" class="mb-3">
+                    <div class="input-group">
+                        <select name="especieId" class="form-control" onchange="this.form.submit()">
+                            <option value="">Todas las especies</option>
+                            @foreach (var especie in especies)
+                            {
+                                @if (especieId == especie.Id)
+                                {
+                                    <option value="@especie.Id" selected>
+                                        @especie.NombreCientifico (@semillasPorEspecie.GetValueOrDefault(especie.Id, 0) semillas)
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@especie.Id">
+                                        @especie.NombreCientifico (@semillasPorEspecie.GetValueOrDefault(especie.Id, 0) semillas)
+                                    </option>
+                                }
+                            }
+                        </select>
+                        @if (especieId.HasValue)
+                        {
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Limpiar filtro
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (especieSeleccionada != null)
+{
+    <div class="alert alert-info">
+        <h4 class="alert-heading">@especieSeleccionada.NombreCientifico</h4>
+        <p>Nombre común: @especieSeleccionada.NombreComun</p>
+        <p>Familia: @especieSeleccionada.Familia</p>
+        <hr>
+        <p class="mb-0">@especieSeleccionada.Descripcion</p>
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear nueva semilla</a>
+</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+                <th>Especie</th>
+                <th>Ubicación</th>
+                <th>@Html.DisplayNameFor(model => model.Cantidad)</th>
+                <th>@Html.DisplayNameFor(model => model.FechaAlmacenamiento)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var especie = especies.FirstOrDefault(e => e.Id == item.EspecieId);
+                var ubicacion = ubicaciones.FirstOrDefault(u => u.Id == item.UbicacionId);
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                    <td>
+                        <span title="@especie?.NombreComun">@especie?.NombreCientifico</span>
+                    </td>
+                    <td>
+                        <span title="@ubicacion?.Descripcion">@ubicacion?.Nombre</span>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
+                    <td>@item.FechaAlmacenamiento?.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
+                            <form asp-action="Delete" method="post" style="display: inline;">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('¿Está seguro de eliminar esta semilla?')">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

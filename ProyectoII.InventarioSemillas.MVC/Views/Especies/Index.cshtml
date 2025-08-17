@@ -1,0 +1,86 @@
+@model IEnumerable<ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto>
+
+@{
+    ViewData["Title"] = "Gestión de especies";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Registrar nueva especie</a>
+</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.NombreCientifico)</th>
+            <th>@Html.DisplayNameFor(m => m.NombreComun)</th>
+            <th>@Html.DisplayNameFor(m => m.Familia)</th>
+            <th>@Html.DisplayNameFor(m => m.Descripcion)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model ?? Enumerable.Empty<ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto>())
+        {
+            <tr>
+                <td>@item.NombreCientifico</td>
+                <td>@item.NombreComun</td>
+                <td>@item.Familia</td>
+                <td>@item.Descripcion</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
+                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="@item.Id">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro de eliminar esta especie?
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="post" asp-action="Delete">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.getElementById('deleteId').value = this.getAttribute('data-id');
+                let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+                modal.show();
+            });
+        });
+    </script>
+}

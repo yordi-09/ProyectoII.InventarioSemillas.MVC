@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Acceso denegado";
+}
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    <p class="text-danger">No cuenta con acceso a la página a la cuál intento ingresar.</p>
+    <br />
+    <div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Ir a inicio</a>
+    </div>
+</header>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

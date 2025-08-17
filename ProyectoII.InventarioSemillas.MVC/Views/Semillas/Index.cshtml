@@ -1,0 +1,171 @@
+@model IEnumerable<ProyectoII.InventarioSemillas.MVC.Models.Semillas.SemillaDto>
+@{
+    ViewData["Title"] = "Gestión de semillas";
+    var especies = (ViewBag.Especies as List<ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto>) ?? new List<ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto>();
+    var ubicaciones = (ViewBag.Ubicaciones as List<ProyectoII.InventarioSemillas.MVC.Models.Ubicaciones.UbicacionDto>) ?? new List<ProyectoII.InventarioSemillas.MVC.Models.Ubicaciones.UbicacionDto>();
+    int? especieId = ViewBag.EspecieId as int?;
+    var semillasPorEspecie = (ViewBag.SemillasPorEspecie as Dictionary<int, int>) ?? new Dictionary<int, int>();
+    var especieSeleccionada = ViewBag.EspecieSeleccionada as ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Filtrar por especie</h5>
+                <form method="get" asp-action="Index" class="mb-3">
+                    <div class="input-group">
+                        <select name="especieId" class="form-control" onchange="this.form.submit()">
+                            <option value="">Todas las especies</option>
+                            @foreach (var especie in especies)
+                            {
+                                @if (especieId == especie.Id)
+                                {
+                                    <option value="@especie.Id" selected>
+                                        @especie.NombreCientifico (@semillasPorEspecie.GetValueOrDefault(especie.Id, 0) semillas)
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@especie.Id">
+                                        @especie.NombreCientifico (@semillasPorEspecie.GetValueOrDefault(especie.Id, 0) semillas)
+                                    </option>
+                                }
+                            }
+                        </select>
+                        @if (especieId.HasValue)
+                        {
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Limpiar filtro
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (especieSeleccionada != null)
+{
+    <div class="alert alert-info">
+        <h4 class="alert-heading">@especieSeleccionada.NombreCientifico</h4>
+        <p>Nombre común: @especieSeleccionada.NombreComun</p>
+        <p>Familia: @especieSeleccionada.Familia</p>
+        <hr>
+        <p class="mb-0">@especieSeleccionada.Descripcion</p>
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Registrar nueva semilla</a>
+</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+                <th>Especie</th>
+                <th>Ubicación</th>
+                <th>@Html.DisplayNameFor(model => model.Cantidad)</th>
+                <th>@Html.DisplayNameFor(model => model.FechaAlmacenamiento)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var especie = especies.FirstOrDefault(e => e.Id == item.EspecieId);
+                var ubicacion = ubicaciones.FirstOrDefault(u => u.Id == item.UbicacionId);
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                    <td>
+                        <span title="@especie?.NombreComun">@especie?.NombreCientifico</span>
+                    </td>
+                    <td>
+                        <span title="@ubicacion?.Descripcion">@ubicacion?.Nombre</span>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
+                    <td>@item.FechaAlmacenamiento?.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
+                            <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="@item.Id">
+                                Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro de eliminar esta semilla?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let deleteId = null;
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            deleteId = this.getAttribute('data-id');
+            let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show();
+        });
+    });
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+        if (deleteId) {
+            fetch(`/Semillas/Delete/${deleteId}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert("Error al eliminar");
+                }
+            })
+            .catch(err => console.error(err));
+        }
+    });
+</script>

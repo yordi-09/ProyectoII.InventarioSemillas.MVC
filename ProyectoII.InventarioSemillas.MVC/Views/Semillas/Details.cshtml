@@ -1,0 +1,39 @@
+@model ProyectoII.InventarioSemillas.MVC.Models.Semillas.SemillaDto
+@{
+    ViewData["Title"] = "Detalles de semilla";
+    var especies = ViewBag.Especies as List<ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto>;
+    var especie = especies?.FirstOrDefault(e => e.Id == Model.EspecieId);
+}
+<h1>@ViewData["Title"]</h1>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class="col-sm-2">
+            Especie
+        </dt>
+        <dd class="col-sm-10">
+            @(especie?.NombreCientifico ?? "")
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cantidad)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cantidad)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaAlmacenamiento)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.FechaAlmacenamiento?.ToString("yyyy-MM-dd")
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+</div>

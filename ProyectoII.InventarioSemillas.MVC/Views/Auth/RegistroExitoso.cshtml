@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Registro exitoso";
+}
+
+<div class="text-center mt-5">
+    <h2 class="text-success">¡Usuario registrado exitosamente!</h2>
+    <p class="lead">El nuevo usuario ya puede iniciar sesión en el sistema.</p>
+
+    <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary mt-3">
+        Registrar otro usuario
+    </a>
+
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary mt-3 ms-2">
+        Volver al inicio
+    </a>
+</div>

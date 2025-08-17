@@ -1,0 +1,46 @@
+@model ProyectoII.InventarioSemillas.MVC.Models.Roles.UserRoleDto
+
+<h4>Asignar rol a usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AssignRole">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Usuario</label>
+                <select asp-for="Email" class="form-control">
+                    <option value="">Seleccione un usuario</option>
+                    @foreach (var usuario in ViewBag.Usuarios)
+                    {
+                        <option value="@usuario.Email">@usuario.Email (@usuario.UserName)</option>
+                    }
+                </select>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <label asp-for="RoleName" class="control-label">Rol</label>
+                <select asp-for="RoleName" class="form-control">
+                    <option value="">Seleccione un rol</option>
+                    @foreach (var rol in ViewBag.Roles)
+                    {
+                        <option value="@rol.Name">@rol.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="RoleName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Asignar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Volver</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

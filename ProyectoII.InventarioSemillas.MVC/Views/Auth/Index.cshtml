@@ -1,0 +1,40 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Bienvenido";
+    var identity = User.Identity as ClaimsIdentity;
+    var nombreCompleto = identity?.FindFirst(ClaimTypes.Name)?.Value;
+    var email = identity?.FindFirst(ClaimTypes.Email)?.Value;
+    var rol = identity?.FindFirst(ClaimTypes.Role)?.Value;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center mb-0">Perfil del usuario</h2>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-circle fa-4x text-primary"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <strong>Nombre:</strong> @nombreCompleto
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Correo:</strong> @email
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Rol:</strong> @rol
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

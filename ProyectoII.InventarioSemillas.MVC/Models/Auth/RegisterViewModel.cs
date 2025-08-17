@@ -6,7 +6,7 @@ namespace ProyectoII.InventarioSemillas.MVC.Models.Auth
 {
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "El campo Email es obligatorio.")]
+        [Required(ErrorMessage = "El campo Correo Electrónico es obligatorio.")]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 

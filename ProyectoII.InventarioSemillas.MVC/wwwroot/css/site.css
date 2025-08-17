@@ -18,7 +18,8 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -28,4 +29,46 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+:root {
+    --color-primary: #2e7d32;
+    --color-primary-hover: #256528;
+    --color-accent-light: #c8e6c9;
+    --color-text-on-dark: white;
+}
+
+.bg-primary {
+    background-color: var(--color-primary) !important;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-dark);
+    border: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+}
+
+.custom-navbar {
+    background: LightGreen;
+    padding: 0.75rem 0;
+}
+
+.custom-footer {
+    background: LightGreen;
+    color: var(--color-accent-light);
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.custom-footer a {
+    color: var(--color-accent-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
 }

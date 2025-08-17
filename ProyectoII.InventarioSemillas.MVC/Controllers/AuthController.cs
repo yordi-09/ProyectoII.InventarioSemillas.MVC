@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoII.InventarioSemillas.MVC.Models.Auth;
 using ProyectoII.InventarioSemillas.MVC.Models.Roles;
 using ProyectoII.InventarioSemillas.MVC.Servicios;
-using System.Reflection;
 using System.Security.Claims;
 
 namespace ProyectoII.InventarioSemillas.MVC.Controllers
@@ -14,6 +13,12 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
         private readonly RolesServicio rolesServicio = rolesServicio;
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         [HttpGet]
         public IActionResult Login()
@@ -50,16 +55,18 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
 
             await SignInUserAsync(model, result);
 
-            return RedirectToAction("Index", "Roles");
+            return RedirectToAction("Index");
         }
 
         private async Task SignInUserAsync(LoginViewModel model, LoginResponseDto result)
         {
             HttpContext.Session.SetString("JWToken", result.Token);
 
+            string nombreCompleto = ObtenerNombreCompleto(result.Name);
+
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, model.Email),
+                new(ClaimTypes.Name, nombreCompleto),
                 new(ClaimTypes.Email, model.Email),
                 new(ClaimTypes.Role, result.Rol),
             };
@@ -68,6 +75,28 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
             var principal = new ClaimsPrincipal(identity);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        }
+
+        private static string ObtenerNombreCompleto(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return string.Empty;
+
+            var partes = name.Split('_');
+            if (partes.Length != 2)
+                return name;
+
+            var nombre = char.ToUpper(partes[0][0]) + partes[0][1..].ToLower();
+            var apellido = char.ToUpper(partes[1][0]) + partes[1][1..].ToLower();
+
+            return $"{nombre} {apellido}";
+        }
+
+        
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
         }
 
         [HttpGet]

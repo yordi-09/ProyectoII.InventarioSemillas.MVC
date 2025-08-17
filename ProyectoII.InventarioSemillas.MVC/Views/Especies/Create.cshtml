@@ -1,7 +1,7 @@
 @model ProyectoII.InventarioSemillas.MVC.Models.Especies.EspecieDto
 
 @{
-    ViewData["Title"] = "Crear especie";
+    ViewData["Title"] = "Registrar especie";
     var familias = ViewBag.FamiliasDropdown as List<dynamic>;
 }
 
@@ -25,14 +25,15 @@
             </div>
 
             <div class="form-group mb-3">
-                <label for="familiaSelect">Familia a la que pertenece:</label>
-                <select id="familiaSelect" name="familia" class="form-control">
-                    <option value="">Sellecione una</option>
+                <label for="familiaSelect" class="form-label">Familia a la que pertenece: <span class="text-danger">*</span></label>
+                <select id="familiaSelect" name="familia" class="form-control" required data-val="true" data-val-required="La Familia es requerida">
+                    <option value="">Seleccione una</option>
                     @foreach (var f in familias!)
                     {
                         <option value="@f.Familia">@f.Familia</option>
                     }
                 </select>
+                <span class="text-danger field-validation-valid" data-valmsg-for="familia" data-valmsg-replace="true"></span>
             </div>
 
             <div class="form-group mb-3">

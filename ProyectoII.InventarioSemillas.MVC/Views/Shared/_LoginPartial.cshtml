@@ -2,20 +2,18 @@
     @if (User.Identity?.IsAuthenticated ?? false)
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Index">
+            <a class="nav-link custom-login" asp-controller="Auth" asp-action="Index">
                 Bienvenido @User.Identity.Name!
             </a>
         </li>
         <li class="nav-item">
-            <form class="form-inline" asp-controller="Auth" asp-action="Logout" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Cerrar sesión</button>
-            </form>
+            <a class="nav-link custom-login" asp-controller="Auth" asp-action="Logout">Cerrar sesión</a>
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Iniciar sesión</a>
+            <a class="nav-link custom-login" asp-controller="Auth" asp-action="Login">Iniciar sesión</a>
         </li>
     }
 </ul>

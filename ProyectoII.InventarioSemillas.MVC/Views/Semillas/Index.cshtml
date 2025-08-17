@@ -60,7 +60,7 @@
 }
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Crear nueva semilla</a>
+    <a asp-action="Create" class="btn btn-primary">Registrar nueva semilla</a>
 </p>
 
 @if (TempData["Success"] != null)
@@ -108,17 +108,64 @@
                         <div class="btn-group" role="group">
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Editar</a>
                             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
-                            <form asp-action="Delete" method="post" style="display: inline;">
-                                <input type="hidden" name="id" value="@item.Id" />
-                                <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('¿Está seguro de eliminar esta semilla?')">
-                                    Eliminar
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="@item.Id">
+                                Eliminar
+                            </button>
                         </div>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro de eliminar esta semilla?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+    let deleteId = null;
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            deleteId = this.getAttribute('data-id');
+            let modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show();
+        });
+    });
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+        if (deleteId) {
+            fetch(`/Semillas/Delete/${deleteId}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert("Error al eliminar");
+                }
+            })
+            .catch(err => console.error(err));
+        }
+    });
+</script>

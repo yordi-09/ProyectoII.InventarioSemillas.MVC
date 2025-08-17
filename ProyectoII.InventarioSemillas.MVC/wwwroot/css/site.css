@@ -8,6 +8,14 @@ html {
   }
 }
 
+main {
+    padding: 30px;
+}
+
+form .form-group {
+    margin-bottom: 20px;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -55,20 +63,38 @@ body {
 }
 
 .custom-navbar {
-    background: LightGreen;
+    background: linear-gradient(200deg, #2e7d32, #66bb6a);
     padding: 0.75rem 0;
 }
 
+.custom-login {
+    color: white !important;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
 .custom-footer {
-    background: LightGreen;
-    color: var(--color-accent-light);
+    background: linear-gradient(200deg, #2e7d32, #66bb6a);
+    color: white !important;
     padding: 2rem 1rem;
     text-align: center;
 }
 
 .custom-footer a {
-    color: var(--color-accent-light);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease-in-out;
+}
+
+input, select, textarea {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+form {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
 }

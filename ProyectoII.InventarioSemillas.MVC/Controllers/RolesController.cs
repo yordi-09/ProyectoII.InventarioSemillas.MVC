@@ -13,7 +13,7 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
         public async Task<IActionResult> Index()
         {
             List<RolDto>? roles = await _rolesServicio.ObtenerTodosLosRoles();
-            return View(roles);
+            return View(roles?? []);
         }
 
         public IActionResult Create()
@@ -53,8 +53,14 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult AssignRole()
+        public async Task<IActionResult> AssignRole()
         {
+            var usuarios = await _rolesServicio.ObtenerTodosLosUsuarios();
+            var roles = await _rolesServicio.ObtenerTodosLosRoles();
+
+            ViewBag.Usuarios = usuarios;
+            ViewBag.Roles = roles;
+
             return View();
         }
 
@@ -71,6 +77,9 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
+
+            ViewBag.Usuarios = await _rolesServicio.ObtenerTodosLosUsuarios();
+            ViewBag.Roles = await _rolesServicio.ObtenerTodosLosRoles();
             return View(model);
         }
 

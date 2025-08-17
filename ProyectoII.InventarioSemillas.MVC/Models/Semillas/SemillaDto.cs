@@ -15,13 +15,15 @@ namespace ProyectoII.InventarioSemillas.MVC.Models.Semillas
         public int EspecieId { get; set; }
 
         [Display(Name = "Ubicación")]
+        [Required(ErrorMessage = "La ubicación es requerida")]
         public int UbicacionId { get; set; }
 
         [Required(ErrorMessage = "La cantidad es requerida")]
-        [Range(0, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor o igual a 0")]
+        [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor a 0")]
         [Display(Name = "Cantidad")]
         public int Cantidad { get; set; }
 
+        [Required(ErrorMessage = "La fecha de almacenamiento es requerida")]
         [Display(Name = "Fecha de almacenamiento")]
         [DataType(DataType.Date)]
         public DateTime? FechaAlmacenamiento { get; set; }

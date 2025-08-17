@@ -36,5 +36,10 @@ namespace ProyectoII.InventarioSemillas.MVC.Servicios
         {
             return await _consumidorApi.ConsumirPostAsync<UserRoleDto, string>("api/roles/remover-rol", modelo);
         }
+
+        public async Task<List<UsuarioDto>?> ObtenerTodosLosUsuarios()
+        {
+            return await _consumidorApi.ConsumirGetAsync<List<UsuarioDto>>("api/Usuarios");
+        }
     }
 }

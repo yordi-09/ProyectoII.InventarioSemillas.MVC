@@ -105,7 +105,7 @@ namespace ProyectoII.InventarioSemillas.MVC.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Remove("JWToken");
